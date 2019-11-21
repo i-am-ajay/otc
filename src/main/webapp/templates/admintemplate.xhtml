@@ -1,0 +1,98 @@
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;">
+    <!ENTITY bull "&#8226;">
+    <!ENTITY copy "&#169;">
+]>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<h:head>
+
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+
+	</f:facet>
+	<title>OTC</title>
+	<h:outputScript name="jquery/jquery.js" library="primefaces" />
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces" />
+	<ui:insert name="head" />
+	<h:outputStylesheet library="primefaces" name="grid/grid.css" />
+	<h:outputStylesheet library="css" name="styleJcs.css" />
+	<h:outputStylesheet library="css" name="button.css" />
+	
+</h:head>
+
+<h:body oncontextmenu="return false;">
+	<p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+   Please wait... <p:graphicImage name="/images/ajax-loader.gif" /></p:dialog>
+	<p:layoutUnit position="north" resizable="true" collapsible="true">
+		<!--Header Start Here -->
+		<ui:insert name="header">
+			<header class="header-inner">
+				<h:form id="timer">
+					<div class="text-right text-white "> Welcome <b>otc</b> @ Sir Ganga Ram Hospital 
+						[
+						<p:commandLink action="otc" value="Logout"></p:commandLink>
+						]
+					</div>
+					<div class="text-right text-white">
+						<b>test</b>
+					</div>
+					<div class="text-right text-white" style="padding-top: 5px">
+						<p:clock pattern="EEEE,dd-MMM-yyyy a " mode="server" />
+					</div>
+					<p:idleMonitor timeout="900000" onidle="PF('alertExpire').show();"></p:idleMonitor>
+				</h:form>
+				
+				
+				<div class="container text-center"></div>
+			</header>
+		</ui:insert>
+		<!--Header Ends Here -->
+		
+	</p:layoutUnit>
+
+	<div class="ui-g" style="padding-top: 50px">
+		<ui:insert name="nav">
+			<div class="overlay"></div>
+		</ui:insert>
+		<div class="ui-g-12 ui-md-6 ui-lg-12 ui-g-nopad">
+			<p:layoutUnit position="center" resizable="true" collapsible="true">
+				<ui:insert name="content">
+
+				</ui:insert>
+			</p:layoutUnit>
+		</div>
+	</div>
+	<!--Footer Start Here -->
+	<ui:insert name="footer">
+		<footer class="footer-inner">
+			<div class="container">
+				<div class="row">				
+					<div class="col-sm-8 text-right text-white">© Copyright 2019, All rights reserved with Filix Consulting Pvt. Ltd.</div>
+				</div>
+			</div>
+		</footer>
+		<p:dialog header="Session Time Out!" widgetVar="alertExpire"
+			onShow="startIdleMonitor()">
+			<div style="font-size:15px">
+			<!--p:graphicImage name="/images/Icon-warning.png" style="width:25px; height:17px;vertical-align:middle;"></p:graphicImage> -->
+			<h:outputText value="Your browser session is expiring in " />
+			<h:outputText id="dialog-countdown" style="font-weight: bold;" />
+			<h:outputText value=" second." />
+			<br />
+			<h:outputText value="Do you want to continue your session?" />
+			</div>
+			
+		</p:dialog>
+	</ui:insert>
+	<!--Footer Ends Here -->
+</h:body>
+</html>

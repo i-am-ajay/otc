@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/admintemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="create">
+			<!-- <p:growl id="msg" />-->
+			<p:panel id="createpanel">
+				<!-- Item Search -->
+				<div class="ui-g">
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="id" value="Item Code" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:selectOneMenu id="id" value="#{itemMapping.itemCode}" style="width:150px" filter="true" filterMatchMode="contains">
+                			<p:ajax listener="#{itemMapping.selectedItemDesc()}" update="item_desc" />
+                			<f:selectItem itemLabel="Select Item" itemValue="" noSelectionOption="true" />
+               	 			<f:selectItems value="#{itemMapping.itemCodesList()}" />
+            			</p:selectOneMenu>
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="item_desc" value="Item Name" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:selectOneMenu id="item_desc" value="#{itemMapping.itemName}" style="width:150px" filter="true" filterMatchMode="contains">
+                			<p:ajax listener="#{itemMapping.selectedItemCode()}" update="id" />
+                			<f:selectItem itemLabel="Select Country" itemValue="" 
+                			noSelectionOption="true" />
+                			<f:selectItems value="#{itemMapping.itemNameList()}" />
+            			</p:selectOneMenu>
+					</div>
+				</div>
+				<!-- Store Search -->
+				<div class="ui-g">
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="sId" value="Store Code" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:selectOneMenu id="sId" value="#{itemMapping.storeCode}" style="width:150px" filter="true" filterMatchMode="contains">
+                			<p:ajax listener="#{itemMapping.selectedStoreName()}" update="sname" />
+                			<f:selectItem itemLabel="Select Store Code" itemValue="" 
+                			noSelectionOption="true" />
+                			<f:selectItems value="#{itemMapping.storeCodeList()}" />
+            			</p:selectOneMenu>
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="sname" value="Store Name" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:selectOneMenu id="sname" value="#{itemMapping.storeName}" style="width:150px" filter="true" filterMatchMode="contains">
+                			<p:ajax listener="#{itemMapping.selectedStoreCode()}" update="sId" />
+                			<f:selectItem itemLabel="Select Store" itemValue="" 
+                			noSelectionOption="true" />
+                			<f:selectItems value="#{itemMapping.storeNameList()}" />
+            			</p:selectOneMenu>
+					</div>
+				</div>
+				<div class="ui-g" style="margin-top:10px">
+					<div class="ui-g-6" style="text-align:right">
+						<p:commandButton  value="Find" icon="ui-icon-search" style="margin-right:30px; padding:0px 20px 0px 20px"
+						action="#{itemMapping.searchItemStoreMapping}" update="table,id item_desc,sId,sname"></p:commandButton>
+					</div>
+					<div class="ui-g-6" style="text-align:left">
+						<p:commandButton value="Create" icon="ui-icon-disk" style="margin-left:30px; padding:0px 20px 0px 20px"
+						action="#{itemMapping.addItemToMappingList}" update="table,id item_desc,sId,sname"></p:commandButton>
+					</div>
+				</div>
+				
+				<!-- Data Table -->
+				
+				<p:dataTable id="table" style="margin-top:30px" value="#{itemMapping.itemStoreMappingList}" var="itemStoreMapping" rowKey="#{itemStoreMapping.id}" rowIndexVar="index">
+					<f:facet name="header">Items Store Mapping</f:facet>
+					<p:column headerText="ItemCode">
+						<h:outputText value="#{itemStoreMapping.itemCode}" />
+						<!-- <h:inputHidden id="h" value="#{item.itemChanged}"/> -->
+					</p:column>
+					<p:column headerText="Item Name">
+						<h:outputText value="#{itemStoreMapping.itemName}" />
+					</p:column>
+					<p:column headerText="Store Code">
+						<h:outputText value="#{itemStoreMapping.storeCode}"/>
+					</p:column>
+					<p:column headerText="Store Name">
+						<h:outputText value="#{itemStoreMapping.storeName}"/>
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{itemStoreMapping.startDate}"/>
+					</p:column>
+					<p:column headerText="End Date">
+						<h:inputHidden id="hid" value="#{itemStoreMapping.changedStatus}" />
+						<p:calendar id="end_cal" value="#{itemStoreMapping.endDate}" pattern="yyyy-MM-dd" onblur="setFlag('create:table:#{index}:hid')">
+							<f:converter converterId="com.filix.utilities.DateConverter" />
+						</p:calendar>
+					</p:column>
+				
+				</p:dataTable>
+				<div class="ui-g" style="margin-top:20px">
+					<div class="ui-g" style="text-align:right">
+						<p:commandButton  value="Assign" icon="ui-icon-disk" style="margin-right:30px; padding:0px 20px 0px 20px"
+						action="#{itemMapping.saveUpdateItemStoreMapping}"></p:commandButton>
+					</div>
+				</div>
+			</p:panel>
+		</h:form>
+		<!-- Main Table Update Logic: 
+			* For each data table row we are setting an id. form_id:table_id:index:row_id
+			* We have mapped a hidden filed with backing bean flag, that is used to check if min max value changed for this bean.
+			* We are using rowIndexVar attribute to set an index variable. 
+			* If min or max value is changed for a row, then on blur we call setFlag() function and to this function 
+				we are passing row id.
+			* If setFlag method is called then for this row and it's mapped bean we'll set the flag to true. 
+			-->
+		<h:outputScript type="text/javascript">
+			function setFlag(id){
+				alert(id);
+				var element = document.getElementById(id);
+				element.value = true;
+			}
+		</h:outputScript>
+	</ui:define>
+</ui:composition>

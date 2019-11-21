@@ -1,0 +1,66 @@
+.ui-menu {
+    width: 16.1em!important;
+    padding: .3em;
+    position: relative;
+    outline: 0 none;
+}
+
+.ui-widget {
+    font-size: 12px;
+ }
+ 
+.singleLine
+{
+    text-wrap:none!important;
+    
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    text-align: center!important;
+}
+
+.leftAlign {
+    float: left;
+    display: inline-block;
+    padding: 2px 6px;
+    zoom: 1;
+    margin-left: 1px;
+    margin-right: 1px;
+    text-decoration: none;
+    outline: 0
+}
+p.normal {
+    font-weight: normal;
+}
+
+p.light {
+    font-weight: lighter;
+}
+
+p.thick {
+    font-weight: bold;
+}	<h:outputStylesheet library="css" name="style.css" />
+
+p.thicker {
+    font-weight: 900;
+}
+
+.fixed-size {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+.rightalign {
+	float:right; 
+	margin-right: 20px!important;	<h:outputStylesheet library="css" name="style.css" />
+	width: 80px!important;
+}
+.editimage {
+	width:12px; 
+	hight:12px; 
+	float:left;
+	margin-right: 5px;	
+}
+
+.columnleft {
+	float:left;
+}
+

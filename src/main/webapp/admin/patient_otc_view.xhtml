@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/admintemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="create">
+			<!-- <p:growl id="msg" />-->
+			<p:panel id="createpanel">
+				<div class="ui-g">
+					<div class="ui-g-2 ui-md-2">
+						<p:outputLabel  styleClass="label" for="Id" value="Registration Number" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:inputText  id="Id" value="#{patientBean.registrationId}" placeholder="Registration Number"
+						readonly="false" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:outputLabel  styleClass="label" for="episode_no" value="Episode Number" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:inputText  id="episode_no" value="#{patientBean.episodeNumber}" placeholder="Episode Number"
+						readonly="false" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:outputLabel  styleClass="label" for="patient_name" value="Patient Name" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:inputText id="patient_name" value="#{patientBean.patientName}" placeholder="Patient Name"
+						readonly="false" />
+					</div>
+				</div>
+				<div class="ui-g" style="margin-top:10px">
+					<div class="ui-g-2 ui-md-2">
+						<p:outputLabel  styleClass="label" for="consultant_code" value="Consultant Code" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:inputText id="consultant_code" value="#{patientBean.consultantCode}" placeholder="Consultant Code"
+						readonly="false" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:outputLabel  styleClass="label" for="consultant_name" value="Consultant Name" />
+					</div>
+					<div class="ui-g-2 ui-md-2">
+						<p:inputText id="consultant_name" value="#{patientBean.consultantName}" placeholder="Consultant Name"
+						readonly="false" />
+					</div>
+					<div class="ui-g-3" style="text-align:right">
+						<p:commandButton value="Search" icon="ui-icon-search" style="margin-left:30px; padding:0px 20px 0px 20px"
+						action="#{patientBean.populatePatientTable}" update="table"></p:commandButton>
+					</div>
+				</div>
+				
+				<!-- Data Table -->
+				
+				<p:dataTable id="table" style="margin-top:30px" value="#{patientBean.patientList}" var="patient" rowKey="#{consultant.id}" rowIndexVar="index">
+					<f:facet name="header">Patient OTC Details</f:facet>
+					<p:column headerText="Registration Number">
+						<h:outputText value="#{patient.registrationId}" />
+					</p:column>
+					<p:column headerText="Episode Number">
+						<h:outputText value="#{patient.episodeNumber}" />
+					</p:column>
+					<p:column headerText="Patient Name">
+						<h:outputText value="#{patient.patientName}" />
+					</p:column>
+					<p:column headerText="Gender">
+						<h:outputText value="#{patient.gender}"/>
+					</p:column>
+					<p:column headerText="Consultant Code">
+						<h:outputText value="#{patient.consultantCode}"/>
+					</p:column>
+					<p:column headerText="Consultant Name">
+						<h:outputText value="#{patient.consultantName}"/>
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{patient.startDate}"/>
+					</p:column>
+					<p:column headerText="End Date">
+						<h:outputText value="#{patient.endDate}" />
+					</p:column>
+				
+				</p:dataTable>
+				
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

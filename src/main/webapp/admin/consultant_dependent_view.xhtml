@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/admintemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="create">
+			<!-- <p:growl id="msg" />-->
+			<p:panel id="createpanel">
+				<div class="ui-g">
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="Id" value="Consultant Code" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:inputText  id="Id" value="#{consultantBean.consultantCode}" placeholder="Consultant Code"
+						readonly="false" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="consultant_name" value="Consultant Name" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:inputText id="consultant_name" value="#{consultantBean.consultantName}" placeholder="Consultant Name"
+						readonly="false" />
+					</div>
+				</div>
+				<div class="ui-g" style="margin-top:10px">
+					<div class="ui-g-6" style="text-align:left">
+						<p:commandButton value="Search" icon="ui-icon-search" style="margin-left:30px; padding:0px 20px 0px 20px"
+						action="#{consultantBean.populateConsultantTable}" update="table create:s_table"></p:commandButton>
+					</div>
+				</div>
+				
+				<!-- Data Table -->
+				
+				<p:dataTable id="table" style="margin-top:30px" value="#{consultantBean.consultantList}" var="consultantObj" selectionMode="single" selection="#{consultantBean.selectedConsultant}" rowKey="#{consultantObj.consultantCode}" rowIndexVar="index">
+					<p:ajax event="rowSelect" listener="#{consultantBean.setDependentTable}" update="create:s_table" />
+					<p:ajax event="rowUnselect" listener="#{consultantBean.clearDependentTable}" update="create:s_table" />
+					<f:facet name="header">Consultant Master</f:facet>
+					<p:column headerText="Consultant Code">
+						<h:outputText value="#{consultantObj.consultantCode}" />
+					</p:column>
+					<p:column headerText="Consultant Name">
+						<h:outputText value="#{consultantObj.consultantName}" />
+					</p:column>
+					<p:column headerText="Gender">
+						<h:outputText value="#{consultantObj.gender}"/>
+					</p:column>
+					<p:column headerText="Designation">
+						<h:outputText value="#{consultantObj.designation}"/>
+					</p:column>
+					<p:column headerText="Department">
+						<h:outputText value="#{consultantObj.department}"/>
+					</p:column>
+					<p:column headerText="Unit">
+						<h:outputText value="#{consultantObj.unit}"/>
+					</p:column>
+					<p:column headerText="DOB">
+						<h:outputText value="#{consultantObj.dob}"/>
+					</p:column>
+					<p:column headerText="DOJ">
+						<h:outputText value="#{consultantObj.doj}" />
+						
+						<!--<h:outputText value="#{item.minQty}"/>-->
+					</p:column>
+				
+					<p:column headerText="Status">
+						<h:outputText value="#{consultantObj.active}" />
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{consultantObj.startDate}"/>
+					</p:column>
+					<p:column headerText="End Date">
+						<h:outputText value="#{consultantObj.endDate}" />
+					</p:column>
+				
+				</p:dataTable>
+				
+				<!-- Substitute table Data Table -->
+				<!-- Logic to display subsitute table value.
+					* When we select a row, substitute of the item mapped to this row will be displayed in substitute table.
+					* In datatable we pass selectionMode = single and selection= item#selectedItem, which returns this item. 
+					* Through SelectEvent we pass this item to listener method. And we set sustituteItemList in this method.
+					* Then we update substitute table in view component.	 
+				-->
+				<p:dataTable id="s_table" style="margin-top:100px" value="#{consultantBean.consultantDependentList}" var="s_dependent">
+					<f:facet name="header">Dependents</f:facet>
+					<p:column headerText="Dependent Name">
+						<h:outputText value="#{s_dependent.dependentName}" />
+					</p:column>
+					<p:column headerText="Gender">
+						<h:outputText value="#{s_dependent.gender}" />
+					</p:column>
+					<p:column headerText="Relation">
+						<h:outputText value="#{s_dependent.relationship}" />
+					</p:column>
+					<p:column headerText="Dependent Dob">
+						<h:outputText value="#{s_dependent.dependentDob}" />
+					</p:column>
+					<p:column headerText="Dependent Status">
+						<h:outputText value="#{s_dependent.dependentStatus}" />
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{s_dependent.startDate}"/>
+					</p:column>
+					<p:column headerText="End Date">
+						<h:outputText value="#{s_dependent.endDate}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		<!-- Main Table Update Logic: 
+			* For each data table row we are setting an id. form_id:table_id:index:row_id
+			* We have mapped a hidden filed with backing bean flag, that is used to check if min max value changed for this bean.
+			* We are using rowIndexVar attribute to set an index variable. 
+			* If min or max value is changed for a row, then on blur we call setFlag() function and to this function 
+				we are passing row id.
+			* If setFlag method is called then for this row and it's mapped bean we'll set the flag to true. 
+			-->
+		<h:outputScript type="text/javascript">
+			function setFlag(id){
+				//alert(id);
+				var element = document.getElementById(id);
+				element.value = true;
+			}
+		</h:outputScript>
+	</ui:define>
+</ui:composition>

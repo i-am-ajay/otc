@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="../templates/admintemplate.xhtml">
+	<ui:define name="content">
+		<h:form id="create">
+			<!-- <p:growl id="msg" />-->
+			<p:panel id="createpanel">
+				<div class="ui-g">
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="Id" value="Item Code" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:inputText  id="Id" value="#{itemBean.itemCode}" placeholder="Item Code"
+						readonly="false" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:outputLabel  styleClass="label" for="item_desc" value="Item Name" />
+					</div>
+					<div class="ui-g-6 ui-md-3">
+						<p:inputText id="item_desc" value="#{itemBean.itemName}" placeholder="Item Description"
+						readonly="false" />
+					</div>
+				</div>
+				<div class="ui-g" style="margin-top:10px">
+					<div class="ui-g-6" style="text-align:right">
+						<p:commandButton  value="Save" icon="ui-icon-disk" style="margin-right:30px; padding:0px 20px 0px 20px"
+						action="#{itemBean.saveItems}" update="table create:s_table"></p:commandButton>
+					</div>
+					<div class="ui-g-6" style="text-align:left">
+						<p:commandButton value="Search" icon="ui-icon-search" style="margin-left:30px; padding:0px 20px 0px 20px"
+						action="#{itemBean.getItemFromDb}" update="table create:s_table"></p:commandButton>
+					</div>
+				</div>
+				
+				<!-- Data Table -->
+				
+				<p:dataTable id="table" style="margin-top:30px" value="#{itemBean.items}" var="item" selectionMode="single" selection="#{itemBean.selectedItem}" rowKey="#{item.id}" rowIndexVar="index">
+					<p:ajax event="rowSelect" listener="#{itemBean.setSubstituteTable}" update="create:s_table" />
+					<p:ajax event="rowUnselect" listener="#{itemBean.clearSubstituteTable}" update="create:s_table" />
+					<f:facet name="header">OTC Items</f:facet>
+					<p:column headerText="ItemCode">
+						<h:outputText value="#{item.itemCode}" />
+						<h:inputHidden id="h" value="#{item.itemChanged}"/>
+					</p:column>
+					<p:column headerText="Item Name">
+						<h:outputText value="#{item.itemName}" />
+					</p:column>
+					<p:column headerText="UOM">
+						<h:outputText value="#{item.uom}"/>
+					</p:column>
+					<p:column headerText="HSN">
+						<h:outputText value="#{item.hsn}"/>
+					</p:column>
+					<p:column headerText="Tax">
+						<h:outputText value="#{item.taxCategory}"/>
+					</p:column>
+					<p:column headerText="Min Qty">
+						<p:inputText id="min_qty" value="#{item.minQty}" onblur="setFlag('create:table:#{index}:h')"/>
+						
+						<!--<h:outputText value="#{item.minQty}"/>-->
+					</p:column>
+					<p:column headerText="Max Qty">
+						<p:inputText id="max_qty" value="#{item.maxQty}" onblur="setFlag('create:table:#{index}:h')"/>
+						<!--  <h:outputText value="#{item.maxQty}"/> -->
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{item.startDate}"/>
+					</p:column>
+					<p:column headerText="End Date">
+						<h:outputText value="#{item.endDate}" />
+					</p:column>
+				
+				</p:dataTable>
+				
+				<!-- Substitute table Data Table -->
+				<!-- Logic to display subsitute table value.
+					* When we select a row, substitute of the item mapped to this row will be displayed in substitute table.
+					* In datatable we pass selectionMode = single and selection= item#selectedItem, which returns this item. 
+					* Through SelectEvent we pass this item to listener method. And we set sustituteItemList in this method.
+					* Then we update substitute table in view component.	 
+				-->
+				<p:dataTable id="s_table" style="margin-top:100px" value="#{itemBean.substituteList}" var="s_item">
+					<f:facet name="header">Substitute Items</f:facet>
+					<p:column headerText="ItemCode">
+						<h:outputText value="#{s_item.sItemCode}" />
+					</p:column>
+					<p:column headerText="Item Name">
+						<h:outputText value="#{s_item.sItemName}" />
+					</p:column>
+					<p:column headerText="UOM">
+						<h:outputText value="#{s_item.sItemUom}" />
+					</p:column>
+					<p:column headerText="Start Date">
+						<h:outputText value="#{s_item.sStartDate}" />
+					</p:column>
+					<p:column headerText="End Date">
+						<h:outputText value="#{s_item.sEndDate}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+		<!-- Main Table Update Logic: 
+			* For each data table row we are setting an id. form_id:table_id:index:row_id
+			* We have mapped a hidden filed with backing bean flag, that is used to check if min max value changed for this bean.
+			* We are using rowIndexVar attribute to set an index variable. 
+			* If min or max value is changed for a row, then on blur we call setFlag() function and to this function 
+				we are passing row id.
+			* If setFlag method is called then for this row and it's mapped bean we'll set the flag to true. 
+			-->
+		<h:outputScript type="text/javascript">
+			function setFlag(id){
+				//alert(id);
+				var element = document.getElementById(id);
+				element.value = true;
+			}
+		</h:outputScript>
+	</ui:define>
+</ui:composition>
